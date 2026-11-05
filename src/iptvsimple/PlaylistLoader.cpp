@@ -18,6 +18,7 @@
 #include <map>
 #include <regex>
 #include <sstream>
+#include <utility>
 #include <vector>
 
 #include <kodi/General.h>
@@ -87,7 +88,9 @@ bool PlaylistLoader::LoadPlayList()
     return false;
   }
 
-  std::stringstream stream(playlistContent);
+  // C++20 string stream move construction avoids copying the full cached playlist.
+  // Large provider M3U files can otherwise temporarily occupy twice the string storage.
+  std::istringstream stream(std::move(playlistContent));
 
   /* load channels */
   bool isFirstLine = true;
