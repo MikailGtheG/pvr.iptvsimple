@@ -110,7 +110,8 @@ bool PlaylistLoader::LoadPlayList()
     line = StringUtils::TrimRight(line, " \t\r\n");
     line = StringUtils::TrimLeft(line, " \t");
 
-    Logger::Log(LEVEL_DEBUG, "%s - M3U line read: '%s'", __FUNCTION__, line.c_str());
+    // M3U entries may contain private stream tokens and credentials; never log the full line.
+    Logger::Log(LEVEL_DEBUG, "%s - M3U line read", __FUNCTION__);
 
     if (line.empty())
       continue;
