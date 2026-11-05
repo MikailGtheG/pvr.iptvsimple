@@ -83,7 +83,7 @@ bool PlaylistLoader::LoadPlayList()
   std::string playlistContent;
   if (!FileUtils::GetCachedFileContents(m_settings, m_settings->GetM3UCacheFilename(), m_m3uLocation, playlistContent, useM3UCache))
   {
-    Logger::Log(LEVEL_ERROR, "%s - Unable to load playlist cache file '%s':  file is missing or empty.", __FUNCTION__, m_m3uLocation.c_str());
+    Logger::Log(LEVEL_ERROR, "%s - Unable to load playlist cache: file is missing or empty.", __FUNCTION__);
     return false;
   }
 
@@ -165,8 +165,8 @@ bool PlaylistLoader::LoadPlayList()
       }
       else
       {
-        Logger::Log(LEVEL_ERROR, "%s - URL '%s' missing %s descriptor on line 1, attempting to parse it anyway.",
-                    __FUNCTION__, m_m3uLocation.c_str(), M3U_START_MARKER.c_str());
+        Logger::Log(LEVEL_ERROR, "%s - Playlist missing %s descriptor on line 1, attempting to parse it anyway.",
+                    __FUNCTION__, M3U_START_MARKER.c_str());
       }
     }
 
@@ -232,7 +232,7 @@ bool PlaylistLoader::LoadPlayList()
         line = line.substr(1);
         tmpChannel.AddProperty("isWebUrl", "true");
       }
-      Logger::Log(LEVEL_DEBUG, "%s - Adding channel or Media Entry '%s' with URL: '%s'", __FUNCTION__, tmpChannel.GetChannelName().c_str(), line.c_str());
+      Logger::Log(LEVEL_DEBUG, "%s - Adding channel or media entry", __FUNCTION__);
 
       if (m_settings->IsMediaEnabled() &&
           (isMediaEntry || (m_settings->ShowVodAsRecordings() && !isRealTime)))
@@ -286,7 +286,7 @@ bool PlaylistLoader::LoadPlayList()
 
   if (m_channels.GetChannelsAmount() == 0 && m_media.GetNumMedia() == 0)
   {
-    Logger::Log(LEVEL_ERROR, "%s - Unable to load channels or media from file '%s'", __FUNCTION__, m_m3uLocation.c_str());
+    Logger::Log(LEVEL_ERROR, "%s - Unable to load channels or media from configured playlist", __FUNCTION__);
     // We no longer return false as this is just an empty M3U and a missing file error.
     //return false;
   }
@@ -593,7 +593,7 @@ void PlaylistLoader::ParseSinglePropertyIntoChannel(const std::string& line, Cha
     if (addProperty)
       channel.AddProperty(prop, propValue);
 
-    Logger::Log(LEVEL_DEBUG, "%s - Found %s property: '%s' value: '%s' added: %s", __FUNCTION__, markerName.c_str(), prop.c_str(), propValue.c_str(), addProperty ? "true" : "false");
+    Logger::Log(LEVEL_DEBUG, "%s - Parsed stream property (added: %s)", __FUNCTION__, addProperty ? "true" : "false");
   }
 }
 
