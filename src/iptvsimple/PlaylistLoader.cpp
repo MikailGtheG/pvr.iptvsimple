@@ -110,8 +110,8 @@ bool PlaylistLoader::LoadPlayList()
     line = StringUtils::TrimRight(line, " \t\r\n");
     line = StringUtils::TrimLeft(line, " \t");
 
-    // M3U entries may contain private stream tokens and credentials; never log the full line.
-    Logger::Log(LEVEL_DEBUG, "%s - M3U line read", __FUNCTION__);
+    // Avoid per-line logging: playlists may contain tens of thousands of entries.
+    // Never log raw M3U lines, which can contain bearer tokens and stream credentials.
 
     if (line.empty())
       continue;
