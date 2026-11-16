@@ -33,6 +33,8 @@ static long long Measure(const std::string& source, bool moveContent)
       ++lines;
     consumed = lines;
   }
+  if (consumed != 400000)
+    return -1;
   return std::chrono::duration_cast<std::chrono::microseconds>(
              std::chrono::steady_clock::now() - started)
       .count();
@@ -49,15 +51,16 @@ int main()
   std::vector<long long> copyTimes, moveTimes;
   for (int trial = 0; trial < 10; ++trial)
   {
-    copyTimes.push_back(Measure(playlist, false));
-    moveTimes.push_back(Measure(playlist, true));
-  }
-  constexpr size_t expectedRows = 400000;
-  if (consumed != expectedRows)
-  {
-    std::cerr << "Unexpected playlist row count: " << consumed << " (expected " << expectedRows
-              << ")\n";
-    return 1;
+    const auto copy = Measure(playlist, false);
+    const auto move = Measure(playlist, true);
+    if (copy < 0 || move < 0)
+    {
+      std::cerr << "Unexpected playlist row count in trial " << trial
+                << " (expected 400000)\n";
+      return 1;
+    }
+    copyTimes.push_back(copy);
+    moveTimes.push_back(move);
   }
   std::sort(copyTimes.begin(), copyTimes.end());
   std::sort(moveTimes.begin(), moveTimes.end());
