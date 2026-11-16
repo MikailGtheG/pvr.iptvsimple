@@ -52,6 +52,13 @@ int main()
     copyTimes.push_back(Measure(playlist, false));
     moveTimes.push_back(Measure(playlist, true));
   }
+  constexpr size_t expectedRows = 400000;
+  if (consumed != expectedRows)
+  {
+    std::cerr << "Unexpected playlist row count: " << consumed << " (expected " << expectedRows
+              << ")\n";
+    return 1;
+  }
   std::sort(copyTimes.begin(), copyTimes.end());
   std::sort(moveTimes.begin(), moveTimes.end());
   std::cout << "payload_bytes=" << playlist.size()
