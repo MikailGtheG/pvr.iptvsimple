@@ -1,0 +1,27 @@
+name: IPTV playlist benchmark smoke
+on:
+  pull_request:
+    paths:
+      - 'tools/bench/PlaylistStreamBench.cpp'
+      - '.github/workflows/playlist-benchmark.yml'
+  push:
+    branches:
+      - 'perf/zero-copy-playlist-stream'
+    paths:
+      - 'tools/bench/PlaylistStreamBench.cpp'
+      - '.github/workflows/playlist-benchmark.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark-smoke:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile benchmark with warnings as errors
+        run: c++ -std=c++20 -O2 -Wall -Wextra -Werror tools/bench/PlaylistStreamBench.cpp -o /tmp/playlist-bench
+      - name: Execute synthetic parser benchmark
+        run: /tmp/playlist-bench
